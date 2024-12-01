@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35222.181
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HistoryQuizApp", "HistoryQuizApp\HistoryQuizApp.csproj", "{D246D02A-C9FD-4B30-BEB6-5DAB963D9775}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D246D02A-C9FD-4B30-BEB6-5DAB963D9775}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D246D02A-C9FD-4B30-BEB6-5DAB963D9775}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D246D02A-C9FD-4B30-BEB6-5DAB963D9775}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D246D02A-C9FD-4B30-BEB6-5DAB963D9775}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {538418ED-6839-4A98-BEF4-DB27CF8DA6A2}
+	EndGlobalSection
+EndGlobal
