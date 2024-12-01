@@ -1,0 +1,27 @@
+﻿@{
+    ViewBag.Title = "Xác thực Email";
+    Layout = null;
+}
+
+<div style="text-align: center; margin-top: 50px; font-family: Arial, sans-serif;">
+
+    <h1 style="color: @(ViewBag.IsCheck ? "#4CAF50" : "#F44336");">
+        @ViewBag.Notification
+    </h1>
+    <p style="font-size: 18px; color: @(ViewBag.IsCheck ? "#4CAF50" : "#F44336");">
+        @ViewBag.Content
+    </p>
+
+    <!-- Thêm thẻ <p> để chỉ dẫn -->
+    <p style="margin-top: 20px; font-size: 16px; color: #555;">
+        @if (ViewBag.IsCheck)
+        {
+            <strong> Bạn có thể quay lại ứng dụng và đăng nhập ngay bây giờ.</strong>
+        }
+        else
+        {
+            <strong>Vui lòng kiểm tra liên kết xác thực hoặc liên hệ với bộ phận hỗ trợ.</strong>
+            
+        }
+    </p>
+</div>

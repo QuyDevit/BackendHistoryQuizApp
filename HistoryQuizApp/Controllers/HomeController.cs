@@ -1,4 +1,5 @@
 using HistoryQuizApp.Models;
+using HistoryQuizApp.Security;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -12,8 +13,13 @@ namespace HistoryQuizApp.Controllers
         {
             _logger = logger;
         }
-
         public IActionResult Index()
+        {
+            return View();
+        }
+        [CustomAuthorize("Admin")]
+        [Route("home")]
+        public IActionResult DashBoard()
         {
             return View();
         }

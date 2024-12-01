@@ -1,0 +1,197 @@
+﻿@{
+    ViewBag.Title = "Quản lý tài khoản";
+    Layout = "_LayoutAdmin";
+}
+@model ICollection<HistoryQuizApp.Models.EF.User>
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4">Tài khoản người dùng</h4>
+    <div class="card">
+        <h5 class="card-header">Danh sách tài khoản</h5>
+        <div class="card-body">
+            <div class="table-responsive text-nowrap">
+                <table id="basic-datatables" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Tên</th>
+                            <th>Email</th>
+                            <th>Trường</th>
+                            <th>Lớp</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach(var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                   <strong>@item.FullName</strong>
+                                </td>
+                                <td>@item.Email</td>
+                                <td>
+                                    @item.School
+                                </td>
+                                <td>
+                                    @item.Grade.GradeName
+                                </td>
+                                <td><span class="badge @(item.Status == true ? "bg-label-success" :"bg-label-warning") me-1">@(item.Status == true ? "Đang sử dụng" : "Đã khóa")</span></td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                            <i class="bx bx-dots-vertical-rounded"></i>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item get-user" data-id="@item.Id" href="javascript:void(0);" data-toggle="modal" data-target="#exampleModal"><i class="bx bx-edit-alt me-1"></i> Chỉnh sửa</a>
+                                            <a class="dropdown-item" href="javascript:void(0);" onclick="BlockUser(@item.Id)"><i class="bx bx-trash me-1"></i> @(item.Status == true ? "Khóa tài khoản" : "Mở khóa")</a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                       
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Chỉnh sửa thông tin</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label for="full-name" class="col-form-label">Tên người dùng:</label>
+                <input type="text" class="form-control" id="full-name">
+                <label for="email" class="col-form-label">Email:</label>
+                <input type="text" class="form-control" id="email">
+                <label for="school" class="col-form-label">Trường học:</label>
+                <input type="text" class="form-control" id="school">
+                <div class="input-group mt-3">
+                    <label class="input-group-text" for="grade">Lớp</label>
+                    <select class="form-select" id="grade">
+                        @foreach (var item in ViewBag.ListGrade)
+                        {
+                            <option value="@item.Id">@item.GradeName</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" onclick="updateUser()">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#basic-datatables").DataTable({});
+    })
+    var iduser = 0;
+    $(".get-user").click(function () {
+        iduser = $(this).attr("data-id");
+        getUser(iduser);
+    });
+    function updateUser() {
+        const fullname = $("#full-name").val();
+        const email = $("#email").val();
+        const school = $("#school").val();
+        const grade = $("#grade").val();
+        if (fullname == "" || email == "" || school == "" || grade == "") {
+            Swal.fire({
+                title: "Thông báo",
+                text: "Vui lòng nhập đầy đủ không được để trống!",
+                icon: "question"
+            });
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("UpdateInfo", "Auth")',
+            data: JSON.stringify({
+                id:iduser,
+                fullname: fullname,
+                email: email,
+                school: school,
+                gradeId: grade
+            }), 
+            contentType: "application/json",
+            success: function (response) {
+                if (response.status == true) {
+                    location.reload();
+                }
+                else {
+                    Swal.fire({
+                        title: "Thông báo",
+                        text: "Đã xảy ra lỗi!",
+                        icon: "question"
+                    });
+                }
+            },
+            error: function (err) {
+
+            }
+        })
+    }
+    function BlockUser(value){
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("BLockAcount", "Account")',
+            data: {
+                iduser:value
+            },
+            success: function (response) {
+                if (response.status == true) {
+                    location.reload();
+                }
+                else {
+                    Swal.fire({
+                        title: "Thông báo",
+                        text: "Đã xảy ra lỗi!",
+                        icon: "question"
+                    });
+                }
+            },
+            error: function (err) {
+
+            }
+        })
+    }
+
+    function getUser(value) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetInfoUser", "Auth")',
+            data: JSON.stringify({
+                id: value,
+            }),
+            contentType: "application/json",
+            success: function (response) {
+                if (response.status == true) {
+                    $("#full-name").val(response.data.fullName);
+                    $("#email").val(response.data.email);
+                    $("#school").val(response.data.school);
+                    $("#grade").val(response.data.gradeId);
+                }
+                else {
+                    Swal.fire({
+                        title: "Thông báo",
+                        text: "Đã xảy ra lỗi!",
+                        icon: "question"
+                    });
+                }
+            },
+            error: function (err) {
+
+            }
+        })
+    }
+   
+</script>
