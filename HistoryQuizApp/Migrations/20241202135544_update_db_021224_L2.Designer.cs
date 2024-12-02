@@ -4,6 +4,7 @@ using HistoryQuizApp.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HistoryQuizApp.Migrations
 {
     [DbContext(typeof(HistoryQuizAppContext))]
-    partial class HistoryQuizAppContextModelSnapshot : ModelSnapshot
+    [Migration("20241202135544_update_db_021224_L2")]
+    partial class update_db_021224_L2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -249,9 +252,6 @@ namespace HistoryQuizApp.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("GradeId")
-                        .HasColumnType("int");
-
                     b.Property<string>("QuestionIds")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -263,8 +263,6 @@ namespace HistoryQuizApp.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("GradeId");
 
                     b.HasIndex("UserId");
 
@@ -403,15 +401,9 @@ namespace HistoryQuizApp.Migrations
 
             modelBuilder.Entity("HistoryQuizApp.Models.EF.Test", b =>
                 {
-                    b.HasOne("HistoryQuizApp.Models.EF.Grade", "Grade")
-                        .WithMany()
-                        .HasForeignKey("GradeId");
-
                     b.HasOne("HistoryQuizApp.Models.EF.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
-
-                    b.Navigation("Grade");
 
                     b.Navigation("User");
                 });

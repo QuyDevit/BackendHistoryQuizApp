@@ -17,12 +17,6 @@ namespace HistoryQuizApp.Controllers
         {
             return View();
         }
-        [CustomAuthorize("Admin")]
-        [Route("home")]
-        public IActionResult DashBoard()
-        {
-            return View();
-        }
 
         public IActionResult Privacy()
         {

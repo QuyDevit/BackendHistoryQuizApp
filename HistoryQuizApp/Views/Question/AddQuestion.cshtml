@@ -1,0 +1,215 @@
+﻿@{
+    ViewBag.Title = "Thêm Câu hỏi";
+    Layout = "_LayoutAdmin";
+}
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="row">
+        <div class="col-md-5">
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Thêm câu hỏi</h5>
+                    <small class="text-muted float-end"></small>
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label" for="basic-default-fullname">Câu hỏi</label>
+                            <input type="text" class="form-control" id="content" placeholder="Abc">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="basic-default-fullname">Mô tả</label>
+                            <textarea  class="form-control" id="description" placeholder="..."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="slectGrade">Phân loại</label>
+                            <select id="slectGrade" class="form-select">
+                                <option value="1">Lớp 10</option>
+                                <option value="2">Lớp 11</option>
+                                <option value="3">Lớp 12</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="slectChapter">Chương</label>
+                            <select id="slectChapter" class="form-select">
+                                
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="slectCategory">Thể loại</label>
+                            <select id="slectCategory" class="form-select">
+                                @foreach (var item in ViewBag.ListCategory)
+                                {
+                                    <option value="@item.Id">@item.CategoryName</option>
+                                }
+                            </select>
+                        </div>
+                        <button type="submit" id="btnAddQuestion" class="btn btn-primary">Thêm câu hỏi</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Thêm đáp án</h5>
+                    <small class="text-muted float-end"></small>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <form>
+                                <div class="mb-3 row">
+                                    <div class="col-md-3 ">
+                                        <label class="form-label" style="margin-left:16px" for="basic-default-fullname">Đáp án đúng</label>
+                                        <div class="form-check d-flex justify-content-center mt-3">
+                                            <input name="default-radio-1" class="form-check-input" type="radio" value="" id="defaultRadio1">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <label class="form-label" for="basic-default-fullname">Đáp án 1</label>
+                                        <textarea id="answer1" class="form-control" placeholder="A..."></textarea>
+                                    </div>
+                                   
+                                </div>
+                                <div class="mb-3 row">
+                                    <div class="col-md-3 mt-5">
+                                        <div class="form-check d-flex justify-content-center">
+                                            <input name="default-radio-1" class="form-check-input" type="radio" value="" id="defaultRadio2">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <label class="form-label" for="basic-default-fullname">Đáp án 2</label>
+                                        <textarea id="answer2" class="form-control" placeholder="B..."></textarea>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <div class="col-md-3 mt-5">
+                                        <div class="form-check d-flex justify-content-center">
+                                            <input name="default-radio-1" class="form-check-input" type="radio" value="" id="defaultRadio3">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <label class="form-label" for="basic-default-fullname">Đáp án 3</label>
+                                        <textarea id="answer3" class="form-control" placeholder="C..."></textarea>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <div class="col-md-3 mt-5">
+                                        <div class="form-check d-flex justify-content-center">
+                                            <input name="default-radio-1" class="form-check-input" type="radio" value="" id="defaultRadio4">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <label class="form-label" for="basic-default-fullname">Đáp án 4</label>
+                                        <textarea id="answer4" class="form-control" placeholder="D..."></textarea>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    getListChapter(1);
+    $('#slectGrade').change(function () {
+        const selectedGrade = $(this).val();
+        getListChapter(selectedGrade);
+    })
+    function getListChapter(value) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetListChapterByGrade", "Question", new{area =""})',
+            data: {
+                idgrade: value
+            },
+            success: function (response) {
+                if (response.status == true) {
+                    let options = "";
+                    response.data.forEach(chapter => {
+                        options += `<option value="${chapter.id}">${chapter.chapterName}</option>`;
+                    });
+                    $('#slectChapter').html(options);
+                }
+                else {
+                    Swal.fire({
+                        title: "Thông báo",
+                        text: "Đã xảy ra lỗi!",
+                        icon: "question"
+                    });
+                }
+            },
+            error: function (err) {
+
+            }
+        })
+    }
+    $('#btnAddQuestion').click(function (e) {
+        e.preventDefault();
+
+        // Thu thập dữ liệu câu hỏi
+        const question = {
+            Content: $('#content').val(),
+            GradeId: $('#slectGrade').val(),
+            ChapterId: $('#slectChapter').val(),
+            CategoryId: $('#slectCategory').val(),
+            Description: $('#description').val(),
+            Choices: []
+        };
+
+        // Thu thập danh sách đáp án
+        for (let i = 1; i <= 4; i++) {
+            const answerContent = $(`#answer${i}`).val();
+            const isCorrect = $(`#defaultRadio${i}`).is(':checked');
+            if (answerContent) {
+                question.Choices.push({
+                    Content: answerContent,
+                    IsCorrect: isCorrect
+                });
+            }
+        }
+
+        // Kiểm tra dữ liệu
+        if (!question.Content || !question.Description || question.Choices.length === 0) {
+            Swal.fire({
+                title: "Thông báo",
+                text: "Vui lòng điền đầy đủ thông tin!",
+                icon: "warning"
+            });
+            return;
+        }
+
+        // Gửi AJAX
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("CreateQuestion", "Question", new { area = "" })',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(question),
+            success: function (response) {
+                if (response.status) {
+                    Swal.fire({
+                        title: "Thành công",
+                        text: response.msg,
+                        icon: "success"
+                    });
+                    $('form').trigger("reset");
+                } else {
+                    Swal.fire({
+                        title: "Thất bại",
+                        text: response.msg,
+                        icon: "error"
+                    });
+                }
+            },
+            error: function (err) {
+                Swal.fire({
+                    title: "Lỗi",
+                    text: "Đã xảy ra lỗi khi thêm câu hỏi.",
+                    icon: "error"
+                });
+            }
+        });
+    });
+</script>

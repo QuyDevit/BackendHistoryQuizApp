@@ -11,9 +11,11 @@ namespace HistoryQuizApp.Models.EF
         public int Id { get; set; }
         public string Content { get; set; }
         public bool IsCorrect { get; set; }
-        public int QuestionId { get; set; }
+        [ForeignKey("QuestionId")]
+        public int? QuestionId { get; set; } 
+        public virtual Question Question { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
-        // Navigation property
-        public Question? Question { get; set; }
     }
 }

@@ -1,0 +1,62 @@
+﻿@{
+    ViewBag.Title = "Quản lý Kết quả";
+    Layout = "_LayoutAdmin";
+}
+@model ICollection<HistoryQuizApp.Models.EF.Test>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="d-flex justify-content-between py-3 mb-4">
+        <h4 class="fw-bold">Danh sách kết quả</h4>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive text-nowrap">
+                <table id="basic-datatables" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Tên người dùng</th>
+                            <th>Tên Bài kiểm tra</th>
+                            <th>Số lượng câu hỏi</th>
+                            <th>Ngày tạo</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @item.User.FullName
+                                </td>
+                                <td style="display: inline-block; width: 300px;border-right-width: 0;text-overflow: ellipsis;overflow: hidden;">Bài kiểm tra lịch sử ngẫu nhiên @item.Grade.GradeName</td>
+                                <td>
+                                    20 câu
+                                </td>
+                                <td>
+                                    @item.CreatedAt.ToString("dd-MM-yyyy")
+                                </td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                            <i class="bx bx-dots-vertical-rounded"></i>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item get-chapter" data-id="@item.Id" href="@Url.Action("DetailResult","Result",new{idlesson =item.Id })"><i class="bx bx-edit-alt me-1"></i> Xem chi tiết</a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    $(document).ready(function () {
+        $("#basic-datatables").DataTable({});
+    })
+
+</script>

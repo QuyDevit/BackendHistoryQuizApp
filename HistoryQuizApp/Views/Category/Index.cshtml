@@ -1,0 +1,235 @@
+﻿@{
+    ViewBag.Title = "Quản lý Thể loại";
+    Layout = "_LayoutAdmin";
+}
+@model ICollection<HistoryQuizApp.Models.EF.Categories>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="d-flex justify-content-between py-3 mb-4">
+        <h4 class="fw-bold">Danh sách Thể loại</h4>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Tạo mới</button>
+    </div>
+
+    <div class="card">
+
+        <div class="card-body">
+            <div class="table-responsive text-nowrap">
+                <table id="basic-datatables" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Tên Thể loại</th>
+                            <th>Mô tả</th>
+                            <th>Ngày tạo</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @item.CategoryName
+                                </td>
+                                <td>
+                                    @item.Description
+                                </td>
+                                <td>
+                                    @item.CreatedAt.ToString("dd-MM-yyyy")
+                                </td>
+                                <td><span class="badge @(item.Status == true ? "bg-label-success" :"bg-label-warning") me-1">@(item.Status == true ? "active" : "inactive")</span></td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                            <i class="bx bx-dots-vertical-rounded"></i>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item get-category" data-id="@item.Id" href="javascript:void(0);" data-toggle="modal" data-target="#exampleModal2"><i class="bx bx-edit-alt me-1"></i> Chỉnh sửa</a>
+                                            <a class="dropdown-item" href="javascript:void(0);" onclick="RemoveCategory(@item.Id)"><i class="bx bx-trash me-1"></i> @(item.Status == true ? "Xóa" : "Khôi phục")</a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Sửa thể loại</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label for="full-name" class="col-form-label">Tên thể loại:</label>
+                <input type="text" class="form-control" id="category-name-edit">
+                <label for="email" class="col-form-label">Mô tả:</label>
+                <input type="text" class="form-control" id="description-edit">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" onclick="saveCategory()">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thêm thể loại</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label for="full-name" class="col-form-label">Tên thể loại:</label>
+                <input type="text" class="form-control" id="category-name">
+                <label for="email" class="col-form-label">Mô tả:</label>
+                <input type="text" class="form-control" id="description">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" onclick="addCategory()">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var idcategory = 0;
+    $(".get-category").click(function () {
+        idcategory = $(this).attr("data-id");
+        getCategory(idcategory);
+    });
+    $(document).ready(function () {
+        $("#basic-datatables").DataTable({});
+    })
+    function addCategory() {
+        const name = $("#category-name").val();
+        const description = $("#description").val();
+
+        if(name == "" ){
+            Swal.fire({
+                title: "Thông báo",
+                text: "Vui lòng nhập đầy đủ thông tin!",
+                icon: "question"
+            });
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("AddCategory", "Category", new { area = "" })',
+            data: {
+                name: name,
+                description: description
+            },
+            success: function (response) {
+                if (response.status == true) {
+                    location.reload();
+                }
+                else {
+                    Swal.fire({
+                        title: "Thông báo",
+                        text: "Đã xảy ra lỗi!",
+                        icon: "question"
+                    });
+                }
+            },
+            error: function (err) {
+
+            }
+        })
+    }
+    function getCategory(value) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetInfoCategory", "Category")',
+            data: {
+                idcategory: value,
+            },
+            success: function (response) {
+                if (response.status == true) {
+                    $("#category-name-edit").val(response.data.categoryName);
+                    $("#description-edit").val(response.data.description);
+                }
+                else {
+                    Swal.fire({
+                        title: "Thông báo",
+                        text: "Đã xảy ra lỗi!",
+                        icon: "question"
+                    });
+                }
+            },
+            error: function (err) {
+
+            }
+        })
+    }
+    function RemoveCategory(value) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("RemoveCategory", "Category", new { area = "" })',
+            data: {
+                idcategory: value,
+            },
+            success: function (response) {
+                if (response.status == true) {
+                    location.reload();
+                }
+                else {
+                    Swal.fire({
+                        title: "Thông báo",
+                        text: "Đã xảy ra lỗi!",
+                        icon: "question"
+                    });
+                }
+            },
+            error: function (err) {
+
+            }
+        })
+    }
+    function saveCategory() {
+        const name = $("#category-name-edit").val();
+        const description = $("#description-edit").val();
+
+        if (name == "" ) {
+            Swal.fire({
+                title: "Thông báo",
+                text: "Vui lòng nhập đầy đủ thông tin!",
+                icon: "question"
+            });
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("SaveCategory", "Category", new { area = "" })',
+            data: {
+                idcategory: idcategory,
+                name: name,
+                description: description
+            },
+            success: function (response) {
+                if (response.status == true) {
+                    location.reload();
+                }
+                else {
+                    Swal.fire({
+                        title: "Thông báo",
+                        text: "Đã xảy ra lỗi!",
+                        icon: "question"
+                    });
+                }
+            },
+            error: function (err) {
+
+            }
+        })
+    }
+</script>

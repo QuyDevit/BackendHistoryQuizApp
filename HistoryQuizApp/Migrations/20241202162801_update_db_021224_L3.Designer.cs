@@ -4,6 +4,7 @@ using HistoryQuizApp.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HistoryQuizApp.Migrations
 {
     [DbContext(typeof(HistoryQuizAppContext))]
-    partial class HistoryQuizAppContextModelSnapshot : ModelSnapshot
+    [Migration("20241202162801_update_db_021224_L3")]
+    partial class update_db_021224_L3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -6,6 +6,7 @@ using HistoryQuizApp.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using System.IdentityModel.Tokens.Jwt;
 using BcryptNet = BCrypt.Net.BCrypt;
 
 namespace HistoryQuizApp.Api
@@ -43,6 +44,10 @@ namespace HistoryQuizApp.Api
             if (user == null)
             {
                 return Json(new { status = false, msg = "Sai mật khẩu hoặc tài khoản" });
+            }
+            if (!user.IsActive)
+            {
+                return Json(new { status = false, msg = "Vui lòng xác thực email!" });
             }
             if (!string.IsNullOrEmpty(user.Password))
             {
@@ -128,6 +133,25 @@ namespace HistoryQuizApp.Api
             }
 
             return Json(new { status = true,data = getuser });
+        }
+        [HttpPost("GetInfoByUser")]
+        public async Task<IActionResult> GetInfoByUser()
+        {
+            var authCookie = Request.Cookies["accesstoken"];
+            if (authCookie == null)
+            {
+                return Json(new { status = false });
+            }
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadJwtToken(authCookie);
+            var userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+            int userid = int.Parse(userId);
+            var getuser = await _context.Users.FindAsync(userid);
+            if (getuser == null)
+            {
+                return Json(new { status = false });
+            }
+            return Json(new { status = true, data = getuser });
         }
         private void SendEmail(string recipientEmail, string subject, string token)
         {

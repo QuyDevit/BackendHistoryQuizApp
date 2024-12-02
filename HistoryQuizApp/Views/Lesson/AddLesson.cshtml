@@ -1,0 +1,125 @@
+﻿@{
+    ViewBag.Title = "Thêm bài học";
+    Layout = "_LayoutAdmin";
+}
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Thêm bài học</h5>
+                    <small class="text-muted float-end"></small>
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label" for="basic-default-fullname">Tên bài học</label>
+                            <input type="text" class="form-control" id="name" placeholder="Abc">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="basic-default-fullname">Nội dung</label>
+                            <textarea rows="20" class="form-control" id="content" placeholder="..."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="slectGrade">Phân loại</label>
+                            <select id="slectGrade" class="form-select">
+                                <option value="1">Lớp 10</option>
+                                <option value="2">Lớp 11</option>
+                                <option value="3">Lớp 12</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="slectChapter">Chương</label>
+                            <select id="slectChapter" class="form-select">
+                            </select>
+                        </div>
+                        <button type="submit" id="btnAddLesson" class="btn btn-primary">Thêm bài học</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+       
+    </div>
+</div>
+<script>
+    getListChapter(1);
+    $('#slectGrade').change(function () {
+        const selectedGrade = $(this).val();
+        getListChapter(selectedGrade);
+    })
+    function getListChapter(value) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetListChapterByGrade", "Question", new { area = "" })',
+            data: {
+                idgrade: value
+            },
+            success: function (response) {
+                if (response.status == true) {
+                    let options = "";
+                    response.data.forEach(chapter => {
+                        options += `<option value="${chapter.id}">${chapter.chapterName}</option>`;
+                    });
+                    $('#slectChapter').html(options);
+                }
+                else {
+                    Swal.fire({
+                        title: "Thông báo",
+                        text: "Đã xảy ra lỗi!",
+                        icon: "question"
+                    });
+                }
+            },
+            error: function (err) {
+
+            }
+        })
+    }
+
+    $('#btnAddLesson').click(function (e) {
+        e.preventDefault();
+        addLesson();
+    })
+    function addLesson() {
+        const name = $("#name").val();
+        const content = $("#content").val();
+        const chapter = $("#slectChapter").val();
+        if (name == "" || content == "") {
+            Swal.fire({
+                title: "Thông báo",
+                text: "Vui lòng điền đầy đủ thông tin!",
+                icon: "warning"
+            });
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("CreateLesson", "Lesson", new { area = "" })',
+            data: {
+                name: name,
+                content: content,
+                chapter: chapter
+            },
+            success: function (response) {
+                if (response.status == true) {
+                    Swal.fire({
+                        title: "Thành công",
+                        text: response.msg,
+                        icon: "success"
+                    });
+                    $('form').trigger("reset");
+                }
+                else {
+                    Swal.fire({
+                        title: "Thông báo",
+                        text: response.msg,
+                        icon: "question"
+                    });
+                }
+            },
+            error: function (err) {
+
+            }
+        })
+    }
+</script>

@@ -1,0 +1,63 @@
+﻿@{
+    ViewBag.Title = "Quản lý Bài học";
+    Layout = "_LayoutAdmin";
+}
+@model ICollection<HistoryQuizApp.Models.EF.Lesson>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="d-flex justify-content-between py-3 mb-4">
+        <h4 class="fw-bold">Danh sách bài học</h4>
+        <a href="@Url.Action("AddLesson","Lesson")" class="btn btn-primary">Tạo mới</a>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive text-nowrap">
+                <table id="basic-datatables" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Tên bài học</th>
+                            <th>Tên chương</th>
+                            <th>Nội dung</th>
+                            <th>Ngày tạo</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td style="display: inline-block; width: 300px;border-right-width: 0;text-overflow: ellipsis;overflow: hidden;">
+                                    @item.Name
+                                </td>
+                                <td>@item.Chapter.ChapterName</td>
+                                <td style="display: inline-block; width: 500px;border-right-width: 0;text-overflow: ellipsis;overflow: hidden;">
+                                    @item.Content
+                                </td>
+                                <td>
+                                    @item.CreatedAt.ToString("dd-MM-yyyy")
+                                </td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                            <i class="bx bx-dots-vertical-rounded"></i>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item get-chapter" data-id="@item.Id" href="@Url.Action("EditLesson","Lesson",new{idlesson =item.Id })"><i class="bx bx-edit-alt me-1"></i> Chỉnh sửa</a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    $(document).ready(function () {
+        $("#basic-datatables").DataTable({});
+    })
+
+</script>

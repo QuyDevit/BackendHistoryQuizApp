@@ -1,0 +1,158 @@
+﻿@{
+    ViewBag.Title = "Quản lý Câu hỏi";
+    Layout = "_LayoutAdmin";
+}
+@model ICollection<HistoryQuizApp.Models.EF.Question>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="d-flex justify-content-between py-3 mb-4">
+        <h4 class="fw-bold">Danh sách câu hỏi</h4>
+        <a href="@Url.Action("AddQuestion","Question")" class="btn btn-primary">Tạo mới</a>
+    </div>
+
+    <div class="card">
+        <div class="d-flex align-items-center">
+            <h5 class="card-header">Lọc theo lớp</h5>
+            <div class="m-0">
+                <select class="form-select" id="slectGrade" aria-label="Default select example">
+                    <option value="1" selected="@(ViewBag.SelectedGrade == 1 ? "selected" : "")">Lớp 10</option>
+                    <option value="2" selected="@(ViewBag.SelectedGrade == 2 ? "selected" : "")">Lớp 11</option>
+                    <option value="3" selected="@(ViewBag.SelectedGrade == 3 ? "selected" : "")">Lớp 12</option>
+                </select>
+            </div>
+            <h5 class="card-header">Lọc theo bài</h5>
+            <div class="m-0">
+                <select class="form-select" id="slectChapter" aria-label="Default select example">
+                </select>
+            </div>
+            <button type="button" class="btn btn-primary" style="margin-left:30px" onclick="filter()">Lọc</button>
+        </div>
+        
+        <div class="card-body">
+            <div class="table-responsive text-nowrap">
+                <table id="basic-datatables" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="width:25%">Câu hỏi</th>
+                            <th>Phân loại</th>
+                            <th>Thể loại</th>
+                            <th>Chương</th>
+                            <th>Ngày tạo</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td style="display: inline-block; width: 500px;overflow: hidden;border-right-width: 0;text-overflow:ellipsis">
+                                    @item.Content
+                                </td>
+                                <td>@item.Grade.GradeName</td>
+                                <td>
+                                    @item.Category.CategoryName
+                                </td>
+                                <td>
+                                    @item.Chapter.ChapterName
+                                </td>
+                                <td>
+                                    @item.CreatedAt.ToString("dd-MM-yyyy")
+                                </td>
+                                <td><span class="badge @(item.Status == true ? "bg-label-success" :"bg-label-warning") me-1">@(item.Status == true ? "Đang sử dụng" : "Đã xóa")</span></td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                            <i class="bx bx-dots-vertical-rounded"></i>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item get-user" data-id="@item.Id" href="@Url.Action("EditQuestion","Question", new{area = "",idquestion = item.Id})"><i class="bx bx-edit-alt me-1"></i> Chỉnh sửa</a>
+                                            <a class="dropdown-item" href="javascript:void(0);" onclick="RemoveQuestion(@item.Id)"><i class="bx bx-trash me-1"></i> @(item.Status == true ? "Xóa câu hỏi" : "Khôi phục")</a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var gradeId = @ViewBag.SelectedGrade;
+
+    document.querySelectorAll('#slectGrade option').forEach(function (option) {
+        if (option.value == gradeId) {
+            option.selected = true;
+        } else {
+            option.selected = false;
+        }
+    });
+    function filter() {
+        const gradeid = $('#slectGrade').val();
+        const chapterid = $('#slectChapter').val();
+        console.log("Grade ID:", gradeid, "Chapter ID:", chapterid);
+        location.href = `/manage/question?gradeid=${gradeid}&chapterid=${chapterid}`;
+    }
+    $(document).ready(function () {
+        $("#basic-datatables").DataTable({});
+    })
+    getListChapter(gradeId);
+    $('#slectGrade').change(function () {
+        const selectedGrade = $(this).val();
+        getListChapter(selectedGrade);
+    })
+    function getListChapter(value) {
+        const selectedChapter = @Html.Raw(ViewBag.SelectedChapter ?? "null");
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetListChapterByGrade", "Question", new { area = "" })',
+            data: {
+                idgrade: value
+            },
+            success: function (response) {
+                if (response.status == true) {
+                    let options = "";
+                    response.data.forEach(chapter => {
+                        options += `<option value="${chapter.id}" ${chapter.id == selectedChapter ? 'selected' : ''}>${chapter.chapterName}</option>`;
+                    });
+                    $('#slectChapter').html(options);
+                } else {
+                    Swal.fire({
+                        title: "Thông báo",
+                        text: "Đã xảy ra lỗi!",
+                        icon: "question"
+                    });
+                }
+            },
+            error: function (err) {
+
+            }
+        })
+    }
+    function RemoveQuestion(value) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("RemoveQuestion", "Question", new { area = "" })',
+            data: {
+                idquestion: value
+            },
+            success: function (response) {
+                if (response.status == true) {
+                    location.reload();
+                }
+                else {
+                    Swal.fire({
+                        title: "Thông báo",
+                        text: "Đã xảy ra lỗi!",
+                        icon: "question"
+                    });
+                }
+            },
+            error: function (err) {
+
+            }
+        })
+    }
+</script>

@@ -1,0 +1,260 @@
+﻿@{
+    ViewBag.Title = "Quản lý chương";
+    Layout = "_LayoutAdmin";
+}
+@model ICollection<HistoryQuizApp.Models.EF.Chapter>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="d-flex justify-content-between py-3 mb-4">
+        <h4 class="fw-bold">Danh sách chương</h4>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Tạo mới</button>
+    </div>
+
+    <div class="card">
+
+        <div class="card-body">
+            <div class="table-responsive text-nowrap">
+                <table id="basic-datatables" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Tên chương</th>
+                            <th>Phân loại</th>
+                            <th>Mô tả</th>
+                            <th>Ngày tạo</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @item.ChapterName
+                                </td>
+                                <td>@item.Grade.GradeName</td>
+                                <td style="display: inline-block; width: 500px;border-right-width: 0;text-overflow: ellipsis;overflow: hidden;">
+                                    @item.Description
+                                </td>
+                                <td>
+                                    @item.CreatedAt.ToString("dd-MM-yyyy")
+                                </td>
+                                <td><span class="badge @(item.Status == true ? "bg-label-success" :"bg-label-warning") me-1">@(item.Status == true ? "active" : "inactive")</span></td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                            <i class="bx bx-dots-vertical-rounded"></i>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item get-chapter" data-id="@item.Id" href="javascript:void(0);" data-toggle="modal" data-target="#exampleModal2"><i class="bx bx-edit-alt me-1"></i> Chỉnh sửa</a>
+                                            <a class="dropdown-item" href="javascript:void(0);" onclick="RemoveChapter(@item.Id)"><i class="bx bx-trash me-1"></i> @(item.Status == true ? "Xóa" : "Khôi phục")</a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Sửa chương</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mt-3">
+                    <label class="input-group-text" for="grade">Phân loại</label>
+                    <select class="form-select" id="grade-edit">
+                        @foreach (var item in ViewBag.ListGrade)
+                        {
+                            <option value="@item.Id">@item.GradeName</option>
+                        }
+                    </select>
+                </div>
+                <label for="full-name" class="col-form-label">Tên chương:</label>
+                <input type="text" class="form-control" id="chapter-name-edit">
+                <label for="email" class="col-form-label">Mô tả:</label>
+                <input type="text" class="form-control" id="description-edit">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" onclick="saveChapter()">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thêm chương</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mt-3">
+                    <label class="input-group-text" for="grade">Phân loại</label>
+                    <select class="form-select" id="grade">
+                        @foreach (var item in ViewBag.ListGrade)
+                        {
+                            <option value="@item.Id">@item.GradeName</option>
+                        }
+                    </select>
+                </div>
+                <label for="full-name" class="col-form-label">Tên chương:</label>
+                <input type="text" class="form-control" id="chapter-name">
+                <label for="email" class="col-form-label">Mô tả:</label>
+                <input type="text" class="form-control" id="description">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" onclick="addChapter()">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var idchapter = 0;
+    $(".get-chapter").click(function () {
+        idchapter = $(this).attr("data-id");
+        getChapter(idchapter);
+    });
+    $(document).ready(function () {
+        $("#basic-datatables").DataTable({});
+    })
+    function addChapter() {
+        const name = $("#chapter-name").val();
+        const grade = $("#grade").val();
+        const description = $("#description").val();
+
+        if(name == "" || grade == ""){
+            Swal.fire({
+                title: "Thông báo",
+                text: "Vui lòng nhập đầy đủ thông tin!",
+                icon: "question"
+            });
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("AddChapter", "Chapter",new {area = ""})',
+            data: {
+                idgrade: grade,
+                name: name,
+                description: description
+            },
+            success: function (response) {
+                if (response.status == true) {
+                    location.reload();
+                }
+                else {
+                    Swal.fire({
+                        title: "Thông báo",
+                        text: "Đã xảy ra lỗi!",
+                        icon: "question"
+                    });
+                }
+            },
+            error: function (err) {
+
+            }
+        })
+    }
+    function getChapter(value) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetInfoChapter", "Chapter")',
+            data: {
+                idchapter: value,
+            },
+            success: function (response) {
+                if (response.status == true) {
+                    $("#chapter-name-edit").val(response.data.chapterName);
+                    $("#description-edit").val(response.data.description);
+                    $("#grade-edit").val(response.data.gradeId);
+                }
+                else {
+                    Swal.fire({
+                        title: "Thông báo",
+                        text: "Đã xảy ra lỗi!",
+                        icon: "question"
+                    });
+                }
+            },
+            error: function (err) {
+
+            }
+        })
+    }
+    function RemoveChapter(value) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("RemoveChapter", "Chapter", new { area = "" })',
+            data: {
+                idchapter: value,
+            },
+            success: function (response) {
+                if (response.status == true) {
+                    location.reload();
+                }
+                else {
+                    Swal.fire({
+                        title: "Thông báo",
+                        text: "Đã xảy ra lỗi!",
+                        icon: "question"
+                    });
+                }
+            },
+            error: function (err) {
+
+            }
+        })
+    }
+    function saveChapter() {
+        const name = $("#chapter-name-edit").val();
+        const grade = $("#grade-edit").val();
+        const description = $("#description-edit").val();
+
+        if (name == "" || grade == "") {
+            Swal.fire({
+                title: "Thông báo",
+                text: "Vui lòng nhập đầy đủ thông tin!",
+                icon: "question"
+            });
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("SaveChapter", "Chapter", new { area = "" })',
+            data: {
+                idchapter: idchapter,
+                idgrade: grade,
+                name: name,
+                description: description
+            },
+            success: function (response) {
+                if (response.status == true) {
+                    location.reload();
+                }
+                else {
+                    Swal.fire({
+                        title: "Thông báo",
+                        text: "Đã xảy ra lỗi!",
+                        icon: "question"
+                    });
+                }
+            },
+            error: function (err) {
+
+            }
+        })
+    }
+</script>

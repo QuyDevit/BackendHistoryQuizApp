@@ -1,0 +1,104 @@
+﻿@{
+    ViewBag.Title = "Chỉnh sửa bài học";
+    Layout = "_LayoutAdmin";
+}
+@model HistoryQuizApp.Models.EF.Lesson
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Thêm bài học</h5>
+                    <small class="text-muted float-end"></small>
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label" for="basic-default-fullname">Tên bài học</label>
+                            <input type="text" class="form-control" id="name" placeholder="Abc" value="@Model.Name">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="basic-default-fullname">Nội dung</label>
+                            <textarea rows="20" class="form-control" id="content" placeholder="...">@Model.Content</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="slectGrade">Phân loại</label>
+                            <select id="slectGrade" class="form-select" disabled>
+                                <option value="1" selected="@(ViewBag.GradeId == 1 ? "selected" : "")">Lớp 10</option>
+                                <option value="2" selected="@(ViewBag.GradeId == 2 ? "selected" : "")">Lớp 11</option>
+                                <option value="3" selected="@(ViewBag.GradeId == 3 ? "selected" : "")">Lớp 12</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="slectChapter">Chương</label>
+                            <select id="slectChapter" class="form-select" disabled>
+                                <option value="@Model.ChapterId" selected>@Model.Chapter.ChapterName</option>
+                            </select>
+                        </div>
+                        <button type="submit" id="btnAddLesson" class="btn btn-primary">Lưu bài học</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script>
+    var gradeId = @ViewBag.GradeId;
+
+    document.querySelectorAll('#slectGrade option').forEach(function (option) {
+        if (option.value == gradeId) {
+            option.selected = true;
+        } else {
+            option.selected = false;
+        }
+    });
+    $('#btnAddLesson').click(function (e) {
+        e.preventDefault();
+        addLesson();
+    })
+    function addLesson() {
+        const name = $("#name").val();
+        const content = $("#content").val();
+        if (name == "" || content == "") {
+            Swal.fire({
+                title: "Thông báo",
+                text: "Vui lòng điền đầy đủ thông tin!",
+                icon: "warning"
+            });
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("UpdateLesson", "Lesson", new { area = "" })',
+            data: {
+                idlesson: `@Model.Id`,
+                name: name,
+                content: content,
+            },
+            success: function (response) {
+                if (response.status == true) {
+                    Swal.fire({
+                        title: "Thành công",
+                        text: response.msg,
+                        icon: "success"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload(); 
+                        }
+                    });
+                }
+                else {
+                    Swal.fire({
+                        title: "Thông báo",
+                        text: response.msg,
+                        icon: "question"
+                    });
+                }
+            },
+            error: function (err) {
+
+            }
+        })
+    }
+</script>

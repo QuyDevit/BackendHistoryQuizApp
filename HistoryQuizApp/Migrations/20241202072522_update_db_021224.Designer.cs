@@ -4,6 +4,7 @@ using HistoryQuizApp.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HistoryQuizApp.Migrations
 {
     [DbContext(typeof(HistoryQuizAppContext))]
-    partial class HistoryQuizAppContextModelSnapshot : ModelSnapshot
+    [Migration("20241202072522_update_db_021224")]
+    partial class update_db_021224
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,15 +43,13 @@ namespace HistoryQuizApp.Migrations
                     b.Property<bool>("IsCorrect")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("QuestionId")
+                    b.Property<int>("QuestionId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("QuestionId");
 
                     b.ToTable("Answer");
                 });
@@ -127,36 +128,6 @@ namespace HistoryQuizApp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Grade");
-                });
-
-            modelBuilder.Entity("HistoryQuizApp.Models.EF.Lesson", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("ChapterId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Content")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ChapterId");
-
-                    b.ToTable("Lesson");
                 });
 
             modelBuilder.Entity("HistoryQuizApp.Models.EF.Question", b =>
@@ -249,9 +220,6 @@ namespace HistoryQuizApp.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("GradeId")
-                        .HasColumnType("int");
-
                     b.Property<string>("QuestionIds")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -263,8 +231,6 @@ namespace HistoryQuizApp.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("GradeId");
 
                     b.HasIndex("UserId");
 
@@ -325,16 +291,6 @@ namespace HistoryQuizApp.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("HistoryQuizApp.Models.EF.Answer", b =>
-                {
-                    b.HasOne("HistoryQuizApp.Models.EF.Question", "Question")
-                        .WithMany("Answers")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Question");
-                });
-
             modelBuilder.Entity("HistoryQuizApp.Models.EF.Chapter", b =>
                 {
                     b.HasOne("HistoryQuizApp.Models.EF.Grade", "Grade")
@@ -342,15 +298,6 @@ namespace HistoryQuizApp.Migrations
                         .HasForeignKey("GradeId");
 
                     b.Navigation("Grade");
-                });
-
-            modelBuilder.Entity("HistoryQuizApp.Models.EF.Lesson", b =>
-                {
-                    b.HasOne("HistoryQuizApp.Models.EF.Chapter", "Chapter")
-                        .WithMany()
-                        .HasForeignKey("ChapterId");
-
-                    b.Navigation("Chapter");
                 });
 
             modelBuilder.Entity("HistoryQuizApp.Models.EF.Question", b =>
@@ -403,15 +350,9 @@ namespace HistoryQuizApp.Migrations
 
             modelBuilder.Entity("HistoryQuizApp.Models.EF.Test", b =>
                 {
-                    b.HasOne("HistoryQuizApp.Models.EF.Grade", "Grade")
-                        .WithMany()
-                        .HasForeignKey("GradeId");
-
                     b.HasOne("HistoryQuizApp.Models.EF.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
-
-                    b.Navigation("Grade");
 
                     b.Navigation("User");
                 });
@@ -423,11 +364,6 @@ namespace HistoryQuizApp.Migrations
                         .HasForeignKey("GradeId");
 
                     b.Navigation("Grade");
-                });
-
-            modelBuilder.Entity("HistoryQuizApp.Models.EF.Question", b =>
-                {
-                    b.Navigation("Answers");
                 });
 #pragma warning restore 612, 618
         }
