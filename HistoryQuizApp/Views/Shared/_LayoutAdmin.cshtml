@@ -128,7 +128,7 @@
                                         <div class="dropdown-divider"></div>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="auth-login-basic.html">
+                                        <a class="dropdown-item" href="javascript:void(0)" onclick="Logout()">
                                             <i class="bx bx-power-off me-2"></i>
                                             <span class="align-middle">Log Out</span>
                                         </a>
@@ -196,6 +196,21 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-   
+   <script>
+       function Logout() { 
+            $.ajax({
+                url: '@Url.Action("Logout","Auth",new {area = "Api"})',
+                type: 'POST',
+                success: function (response) {
+                    if (response.status) {
+                        window.location.href = "/"; 
+                    } 
+                },
+                error: function () {
+                    alert('An error occurred during logout.');
+                }
+            });
+        }
+   </script>
 </body>
 </html>

@@ -70,6 +70,14 @@ namespace HistoryQuizApp.Api
             });
             return Json(new { status = true,token = acToken });
         }
+        [HttpPost("Logout")]
+        public IActionResult Logout()
+        {
+            // Remove the access token cookie
+            HttpContext.Response.Cookies.Delete("accesstoken");
+
+            return Json(new { status = true, msg = "Đăng xuất thành công" });
+        }
         [HttpPost("Register")]
         public async Task<IActionResult> Register(RegisterRequest user)
         {
@@ -145,8 +153,8 @@ namespace HistoryQuizApp.Api
             var tokenHandler = new JwtSecurityTokenHandler();
             var jwtToken = tokenHandler.ReadJwtToken(authCookie);
             var userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
-            int userid = int.Parse(userId);
-            var getuser = await _context.Users.FindAsync(userid);
+            int id = int.Parse(userId);
+            var getuser = await _context.Users.FindAsync(id);
             if (getuser == null)
             {
                 return Json(new { status = false });

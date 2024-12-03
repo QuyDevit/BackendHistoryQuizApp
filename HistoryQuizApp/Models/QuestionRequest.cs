@@ -41,4 +41,12 @@ namespace HistoryQuizApp.Models
         public int QuestionId { get; set; }
         public int AnswerId { get; set; }
     }
+    public class RequestDetailResult
+    {
+        public int? TestId { get; set; }
+    }
+    public class RequestTestById
+    {
+        public int? TestId { get; set; }
+    }
 }

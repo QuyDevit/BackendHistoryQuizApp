@@ -19,7 +19,7 @@ namespace HistoryQuizApp.Controllers
         public async Task<IActionResult> Index()
         {
             var listchapter = await _context.Chapters.Include(n=>n.Grade).ToListAsync();
-            ViewBag.ListGrade = await _context.Grades.ToListAsync();
+            ViewBag.ListGrade = await _context.Grades.Where(n=>n.Id != 4).ToListAsync();
             return View(listchapter);
         }
         #region handle
