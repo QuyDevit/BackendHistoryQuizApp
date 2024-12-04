@@ -23,6 +23,13 @@
         public string? School { get; set; }
         public int? GradeId { get; set; }
     }
+    public class UpdateUserRequest
+    {
+        public string? FullName { get; set; }
+        public string? Email { get; set; }
+        public string? School { get; set; }
+        public int? GradeId { get; set; }
+    }
     public class UserRequest
     {
         public int Id { get; set; }

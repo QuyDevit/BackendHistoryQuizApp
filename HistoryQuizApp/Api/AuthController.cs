@@ -131,6 +131,32 @@ namespace HistoryQuizApp.Api
             _context.SaveChanges();
             return Json(new { status = true });
         }
+        [HttpPost("SaveInfoUser")]
+        public async Task<IActionResult> SaveInfoUser(UpdateUserRequest user)
+        {
+            var authCookie = Request.Cookies["accesstoken"];
+            if (authCookie == null)
+            {
+                return Json(new { status = false });
+            }
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadJwtToken(authCookie);
+            var userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+            int id = int.Parse(userId);
+            var getuser = await _context.Users.FindAsync(id);
+            if (getuser == null)
+            {
+                return Json(new { status = false });
+            }
+
+            getuser.School = user.School;
+            getuser.FullName = user.FullName;
+            getuser.Email = user.Email;
+            getuser.GradeId = user.GradeId;
+
+            _context.SaveChanges();
+            return Json(new { status = true });
+        }
         [HttpPost("GetInfoUser")]
         public async Task<IActionResult> GetInfoUser(UserRequest user)
         {
