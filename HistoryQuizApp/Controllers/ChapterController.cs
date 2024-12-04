@@ -16,9 +16,11 @@ namespace HistoryQuizApp.Controllers
             _context = context;
         }
         [Route("manage/chapter")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int gradeid = 1)
         {
-            var listchapter = await _context.Chapters.Include(n=>n.Grade).ToListAsync();
+            ViewBag.SelectedGrade = gradeid;
+            var listchapter = await _context.Chapters
+                .Where(n=>n.GradeId==gradeid).Include(n=>n.Grade).ToListAsync();
             ViewBag.ListGrade = await _context.Grades.Where(n=>n.Id != 4).ToListAsync();
             return View(listchapter);
         }

@@ -8,11 +8,23 @@
         <h4 class="fw-bold">Danh sách kết quả</h4>
     </div>
     <div class="card">
+        <div class="d-flex align-items-center">
+            <h5 class="card-header">Lọc theo lớp</h5>
+            <div class="m-0">
+                <select class="form-select" id="slectGrade" aria-label="Default select example">
+                    <option value="1" selected="@(ViewBag.SelectedGrade == 1 ? "selected" : "")">Lớp 10</option>
+                    <option value="2" selected="@(ViewBag.SelectedGrade == 2 ? "selected" : "")">Lớp 11</option>
+                    <option value="3" selected="@(ViewBag.SelectedGrade == 3 ? "selected" : "")">Lớp 12</option>
+                </select>
+            </div>
+            <button type="button" class="btn btn-primary" style="margin-left:30px" onclick="filter()">Lọc</button>
+        </div>
         <div class="card-body">
             <div class="table-responsive text-nowrap">
                 <table id="basic-datatables" class="table table-bordered">
                     <thead>
                         <tr>
+                            <th>STT</th>
                             <th>Tên người dùng</th>
                             <th>Tên Bài kiểm tra</th>
                             <th>Số lượng câu hỏi</th>
@@ -21,9 +33,13 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @{
+                            int i = 1;
+                        }
                         @foreach (var item in Model)
                         {
                             <tr>
+                                <td>@i</td>
                                 <td>
                                     @item.User.FullName
                                 </td>
@@ -45,6 +61,7 @@
                                     </div>
                                 </td>
                             </tr>
+                            i++;
                         }
 
                     </tbody>
@@ -54,7 +71,19 @@
     </div>
 </div>
 <script>
+    var gradeId = @ViewBag.SelectedGrade;
 
+    document.querySelectorAll('#slectGrade option').forEach(function (option) {
+        if (option.value == gradeId) {
+            option.selected = true;
+        } else {
+            option.selected = false;
+        }
+    });
+    function filter() {
+        const gradeid = $('#slectGrade').val();
+        location.href = `/manage/result?gradeid=${gradeid}`;
+    }
     $(document).ready(function () {
         $("#basic-datatables").DataTable({});
     })

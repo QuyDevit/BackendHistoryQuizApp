@@ -13,6 +13,7 @@
                 <table id="basic-datatables" class="table table-bordered">
                     <thead>
                         <tr>
+                            <th>STT</th>
                             <th>Tên</th>
                             <th>Email</th>
                             <th>Trường</th>
@@ -22,9 +23,13 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @{
+                            int i = 1;
+                        }
                         @foreach(var item in Model)
                         {
                             <tr>
+                                <td>@i</td>
                                 <td>
                                    <strong>@item.FullName</strong>
                                 </td>
@@ -48,6 +53,7 @@
                                     </div>
                                 </td>
                             </tr>
+                            i++;
                         }
                        
                     </tbody>
@@ -92,7 +98,9 @@
 </div>
 <script>
     $(document).ready(function () {
-        $("#basic-datatables").DataTable({});
+        $("#basic-datatables").DataTable({
+            order: [[0, 'asc']]
+        });
     })
     var iduser = 0;
     $(".get-user").click(function () {

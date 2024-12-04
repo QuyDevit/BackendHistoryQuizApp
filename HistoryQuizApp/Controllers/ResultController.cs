@@ -4,6 +4,7 @@ using HistoryQuizApp.Security;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace HistoryQuizApp.Controllers
 {
@@ -16,9 +17,11 @@ namespace HistoryQuizApp.Controllers
             _context = context;
         }
         [Route("manage/result")]
-        public async Task< IActionResult> Index()
+        public async Task< IActionResult> Index(int gradeid = 1)
         {
+            ViewBag.SelectedGrade = gradeid;
             var listTest = await _context.Tests
+                .Where(n=>n.GradeId == gradeid)
                 .Include(n=>n.Grade)
                 .Include(n=>n.User)
                 .ToListAsync();

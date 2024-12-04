@@ -32,6 +32,7 @@
                 <table id="basic-datatables" class="table table-bordered">
                     <thead>
                         <tr>
+                            <th>STT</th>
                             <th style="width:25%">Câu hỏi</th>
                             <th>Phân loại</th>
                             <th>Thể loại</th>
@@ -42,10 +43,14 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @{
+                            int i = 1;
+                        }
                         @foreach (var item in Model)
                         {
                             <tr>
-                                <td style="display: inline-block; width: 500px;overflow: hidden;border-right-width: 0;text-overflow:ellipsis">
+                                <td>@i</td>
+                                <td style="display: inline-block; width: 450px;overflow: hidden;border-right-width: 0;text-overflow:ellipsis">
                                     @item.Content
                                 </td>
                                 <td>@item.Grade.GradeName</td>
@@ -71,6 +76,7 @@
                                     </div>
                                 </td>
                             </tr>
+                            i++;
                         }
 
                     </tbody>
@@ -96,7 +102,9 @@
         location.href = `/manage/question?gradeid=${gradeid}&chapterid=${chapterid}`;
     }
     $(document).ready(function () {
-        $("#basic-datatables").DataTable({});
+        $("#basic-datatables").DataTable({
+            order: [[0, 'asc']]
+        });
     })
     getListChapter(gradeId);
     $('#slectGrade').change(function () {
