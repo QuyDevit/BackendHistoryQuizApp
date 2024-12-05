@@ -5,6 +5,7 @@ using HistoryQuizApp.Models.EF;
 using HistoryQuizApp.Security;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HistoryQuizApp.Controllers
 {
@@ -41,6 +42,10 @@ namespace HistoryQuizApp.Controllers
             ViewBag.ListCategory = await _context.Categories.ToListAsync();
             var getQuestion = await _context.Questions.Where(n=>n.Id == idquestion)
                 .Include(n=>n.Answers).SingleOrDefaultAsync();
+            if (getQuestion == null)
+            {
+                return RedirectToAction("Index");
+            }
             return View(getQuestion);
         }
         #region handle

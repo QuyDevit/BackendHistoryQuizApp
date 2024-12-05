@@ -129,6 +129,35 @@ namespace HistoryQuizApp.Migrations
                     b.ToTable("Grade");
                 });
 
+            modelBuilder.Entity("HistoryQuizApp.Models.EF.HistoricalFigure", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VideoUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("HistoricalFigure");
+                });
+
             modelBuilder.Entity("HistoryQuizApp.Models.EF.Lesson", b =>
                 {
                     b.Property<int>("Id")

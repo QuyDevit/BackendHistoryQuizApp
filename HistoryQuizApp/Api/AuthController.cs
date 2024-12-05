@@ -82,8 +82,7 @@ namespace HistoryQuizApp.Api
         public async Task<IActionResult> Register(RegisterRequest user)
         {
             if (string.IsNullOrEmpty(user.FullName) || string.IsNullOrEmpty(user.UserName)
-                || string.IsNullOrEmpty(user.Password) || string.IsNullOrEmpty(user.Email)
-                || string.IsNullOrEmpty(user.School) || user.GradeId == 0)
+                || string.IsNullOrEmpty(user.Password) || string.IsNullOrEmpty(user.Email))
             {
                 return Json(new { status = false, msg = "Vui lòng nhập thông tin đầy đủ!" });
             }
@@ -152,7 +151,6 @@ namespace HistoryQuizApp.Api
             getuser.School = user.School;
             getuser.FullName = user.FullName;
             getuser.Email = user.Email;
-            getuser.GradeId = user.GradeId;
 
             _context.SaveChanges();
             return Json(new { status = true });

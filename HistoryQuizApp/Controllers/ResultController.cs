@@ -45,7 +45,7 @@ namespace HistoryQuizApp.Controllers
                 .SingleOrDefaultAsync();
             if (getResult == null)
             {
-                return Json(new { status = false, message = "Không tìm thấy bài thi" });
+                return RedirectToAction("Index");
             }
             var questionIds = JsonConvert.DeserializeObject<List<int>>(getResult.QuestionIds);
             var questionsWithAnswers = await _context.Questions

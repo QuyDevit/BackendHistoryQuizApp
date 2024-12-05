@@ -28,7 +28,6 @@
         public string? FullName { get; set; }
         public string? Email { get; set; }
         public string? School { get; set; }
-        public int? GradeId { get; set; }
     }
     public class UserRequest
     {

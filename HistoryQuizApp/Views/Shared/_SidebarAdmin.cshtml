@@ -48,6 +48,12 @@
                 <div data-i18n="User interface">Bài học</div>
             </a>
         </li>
+        <li class="menu-item @(string.IsNullOrEmpty(currentPath) || currentPath == "/manage/historicalfigure" ? "active" : "")">
+            <a href="@Url.Action("Index","HistoricalFigure")" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-user"></i>
+                <div data-i18n="Tables">Nhân vật lịch sử</div>
+            </a>
+        </li>
         <li class="menu-item @(string.IsNullOrEmpty(currentPath) || currentPath == "/manage/category" ? "active" : "")">
             <a href="@Url.Action("Index","Category")" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-detail"></i>
@@ -60,8 +66,6 @@
                 <div data-i18n="Tables">Chương</div>
             </a>
         </li>
-
-        <!-- Extended components -->
 
 
     </ul>

@@ -49,4 +49,12 @@ namespace HistoryQuizApp.Models
     {
         public int? TestId { get; set; }
     }
+    public class RequestHistoricalFigure
+    {
+        public int Id { get; set; }
+    }
+    public class RequestViewHistoricalFigure
+    {
+        public int Id { get; set; }
+    }
 }

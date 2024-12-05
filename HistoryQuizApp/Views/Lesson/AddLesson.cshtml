@@ -23,6 +23,12 @@
                         <div class="mb-3">
                             <label class="form-label" for="slectGrade">Phân loại</label>
                             <select id="slectGrade" class="form-select">
+                                <option value="5">Lớp 4</option>
+                                <option value="6">Lớp 5</option>
+                                <option value="7">Lớp 6</option>
+                                <option value="8">Lớp 7</option>
+                                <option value="9">Lớp 8</option>
+                                <option value="10">Lớp 9</option>
                                 <option value="1">Lớp 10</option>
                                 <option value="2">Lớp 11</option>
                                 <option value="3">Lớp 12</option>
@@ -42,7 +48,7 @@
     </div>
 </div>
 <script>
-    getListChapter(1);
+    getListChapter(5);
     $('#slectGrade').change(function () {
         const selectedGrade = $(this).val();
         getListChapter(selectedGrade);

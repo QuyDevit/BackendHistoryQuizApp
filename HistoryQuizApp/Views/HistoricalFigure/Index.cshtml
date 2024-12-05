@@ -1,0 +1,70 @@
+﻿@{
+    ViewBag.Title = "Quản lý Câu hỏi";
+    Layout = "_LayoutAdmin";
+}
+@model ICollection<HistoryQuizApp.Models.EF.HistoricalFigure>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="d-flex justify-content-between py-3 mb-4">
+        <h4 class="fw-bold">Nhân vật lịch sử</h4>
+        <a href="@Url.Action("AddHistoricalFigure","HistoricalFigure")" class="btn btn-primary">Tạo mới</a>
+    </div>
+
+    <div class="card">   
+        <div class="card-body">
+            <div class="table-responsive text-nowrap">
+                <table id="basic-datatables" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th style="width:25%">Tên nhân vật lịch sử</th>
+                            <th>Hình ảnh</th>
+                            <th>Nội dung</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int i = 1;
+                        }
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@i</td>
+                                <td >
+                                    @item.Name
+                                </td>
+                                <td>
+                                    <img style="width:80px;height:80px;" src="@item.ImageUrl" />
+                                </td>
+                                <td style="display: inline-block; width: 450px;overflow: hidden;border-right-width: 0;text-overflow:ellipsis">
+                                    @item.Content
+                                </td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                            <i class="bx bx-dots-vertical-rounded"></i>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item get-user" data-id="@item.Id" href="@Url.Action("EditHistoricalFigure","HistoricalFigure", new{area = "",id = item.Id})"><i class="bx bx-edit-alt me-1"></i> Chỉnh sửa</a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            i++;
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    $(document).ready(function () {
+        $("#basic-datatables").DataTable({
+            order: [[0, 'asc']]
+        });
+    })
+  
+</script>

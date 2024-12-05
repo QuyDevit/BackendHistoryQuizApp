@@ -18,6 +18,7 @@ namespace HistoryQuizApp.DatabaseContext
         public DbSet<Test> Tests { get; set; }
         public DbSet<SelectedAnswer> SelectedAnswers { get; set; }
         public DbSet<Lesson> Lessons { get; set; }
+        public DbSet<HistoricalFigure> HistoricalFigures { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

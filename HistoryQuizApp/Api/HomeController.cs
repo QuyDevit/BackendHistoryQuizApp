@@ -62,6 +62,23 @@ namespace HistoryQuizApp.Api
             var data = await _context.Lessons.Where(n => n.ChapterId == request.ChapterId).SingleOrDefaultAsync();
             return Json(data);
         }
+        [HttpGet("GetListHistoricalFigure")]
+        public async Task<IActionResult> GetListHistoricalFigure()
+        {
+            var data = await _context.HistoricalFigures.Select(n => new
+            {
+                n.Id,
+                n.Name,
+                n.ImageUrl,
+            }).ToListAsync();
+            return Json(data);
+        }
+        [HttpPost("GetHistoricalFigureById")]
+        public async Task<IActionResult> GetHistoricalFigureById(RequestHistoricalFigure request)
+        {
+            var data = await _context.HistoricalFigures.SingleOrDefaultAsync(n=>n.Id==request.Id);
+            return Json(data);
+        }
         [HttpPost("GetTest")]
         public async Task<IActionResult> GetTest(RequestTest request)
         {

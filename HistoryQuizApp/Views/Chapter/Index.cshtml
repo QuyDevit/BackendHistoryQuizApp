@@ -14,6 +14,12 @@
             <h5 class="card-header">Lọc theo lớp</h5>
             <div class="m-0">
                 <select class="form-select" id="slectGrade" aria-label="Default select example">
+                    <option value="5" selected="@(ViewBag.SelectedGrade == 5 ? "selected" : "")">Lớp 4</option>
+                    <option value="6" selected="@(ViewBag.SelectedGrade == 6 ? "selected" : "")">Lớp 5</option>
+                    <option value="7" selected="@(ViewBag.SelectedGrade == 7 ? "selected" : "")">Lớp 6</option>
+                    <option value="8" selected="@(ViewBag.SelectedGrade == 8 ? "selected" : "")">Lớp 7</option>
+                    <option value="9" selected="@(ViewBag.SelectedGrade == 9 ? "selected" : "")">Lớp 8</option>
+                    <option value="10" selected="@(ViewBag.SelectedGrade == 10 ? "selected" : "")">Lớp 9</option>
                     <option value="1" selected="@(ViewBag.SelectedGrade == 1 ? "selected" : "")">Lớp 10</option>
                     <option value="2" selected="@(ViewBag.SelectedGrade == 2 ? "selected" : "")">Lớp 11</option>
                     <option value="3" selected="@(ViewBag.SelectedGrade == 3 ? "selected" : "")">Lớp 12</option>

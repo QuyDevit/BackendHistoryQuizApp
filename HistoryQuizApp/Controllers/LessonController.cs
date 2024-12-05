@@ -38,6 +38,10 @@ namespace HistoryQuizApp.Controllers
         {
             var data = await _context.Lessons.Include(n=>n.Chapter).FirstOrDefaultAsync(n=>n.Id == idlesson);
             var gradeId = await _context.Chapters.FindAsync(data.ChapterId);
+            if (data == null)
+            {
+                return RedirectToAction("Index");
+            }
             ViewBag.GradeId = gradeId.GradeId;
             return View(data);
         }
